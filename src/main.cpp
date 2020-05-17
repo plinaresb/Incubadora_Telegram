@@ -214,8 +214,6 @@ void setup() {
   dht.begin();
   display.display();
 
-  digitalWrite(rele, LOW);
-
   //Para que funcione bien el bot es necesario el fingerprint del mismo
   bot._debug = true;
   client.setFingerprint("xx:xx:xx:xx:xx:xx");  //https://api.telegram.org/botxxxxxxx (xxx es el token) luego view page info, security, view certificate, sh1

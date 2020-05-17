@@ -14,12 +14,12 @@
 
 //Ponemos las credenciales de la conexión de internet
 //We put the internet connection credentials
-const char *ssid     = "ANAYPABLO";
-const char *password = "OKATKRTK";
+const char *ssid     = "xxxxxx";
+const char *password = "xxxxxxxx";
 
 //Configuramos el token del bot que usaremos
 //We configure the token of the bot that we will use
-const char BotToken[] = "1135102352:AAG0a37Y_WK65oNSqHp2tG4j3GHLQNQisUA";
+const char BotToken[] = "xxxxxxxxx";
 WiFiClientSecure client;
 UniversalTelegramBot bot (BotToken, client);
 int Bot_mtbs = 1000; //Tiempo entre escaneo de mensajes (1s) -- mean time between scan messages
@@ -150,7 +150,7 @@ bool Giro(void *) {
 //Función de alarma ante temperatura muy baja
 //Very low temperature alarm function
 void Alarma() {
-  String chat_id2 = String("785307180");
+  String chat_id2 = String("xxxxxxxx");
   bot.sendMessage(chat_id2, "Temperatura Incubadora muy baja!!"); 
 }
 
@@ -158,7 +158,7 @@ void Alarma() {
 //Function to control the heating of the incubator
 void ControlTemperatura() {
   if(setTemp-temp<=0.2 || temp > 38){
-    digitalWrite(rele,HIGH);
+    digitalWrite(rele, HIGH);
     display.setCursor(1, 32);
     display.print("LAMPARA OFF"); 
     digitalWrite(ledAzul, LOW);
@@ -218,7 +218,7 @@ void setup() {
 
   //Para que funcione bien el bot es necesario el fingerprint del mismo
   bot._debug = true;
-  client.setFingerprint("F2:AD:29:9C:34:48:DD:8D:F4:CF:52:32:F6:57:33:68:2E:81:C1:90");  //https://api.telegram.org/botxxxxxxx (xxx es el token) luego view page info, security, view certificate, sh1
+  client.setFingerprint("xx:xx:xx:xx:xx:xx");  //https://api.telegram.org/botxxxxxxx (xxx es el token) luego view page info, security, view certificate, sh1
   
 }
 

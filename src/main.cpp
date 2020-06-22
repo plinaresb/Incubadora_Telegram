@@ -14,12 +14,12 @@
 
 //Ponemos las credenciales de la conexión de internet
 //We put the internet connection credentials
-const char *ssid     = "xxxxxx";
-const char *password = "xxxxxxxx";
+const char *ssid     = "xxxxxxx";
+const char *password = "xxxxxxxxxx";
 
 //Configuramos el token del bot que usaremos
 //We configure the token of the bot that we will use
-const char BotToken[] = "xxxxxxxxx";
+const char BotToken[] = "xxxxxxx:xxxxx_xxxxxxxxxx";
 WiFiClientSecure client;
 UniversalTelegramBot bot (BotToken, client);
 int Bot_mtbs = 1000; //Tiempo entre escaneo de mensajes (1s) -- mean time between scan messages
@@ -44,12 +44,14 @@ DHT dht(DHTPIN, DHTTYPE);
 //Definimos los pines de conexión del rele, leds y servo
 //Define the pin of the rele, led and servo
 #define rele D6
-#define ledAzul D4
-#define ledRojo D3
+#define ledAzul D1
+#define ledRojo D2
 #define SERVO D7
 
 //Configuramos la pantalla Oled 
 //We configure the oled screen
+int sda = D4;
+int scl = D3;
 #define ANCHO_PANTALLA 128 // ancho pantalla OLED -- wide Oled screen
 #define ALTO_PANTALLA 64 // alto pantalla OLED -- high Oled screen
 Adafruit_SSD1306 display(ANCHO_PANTALLA, ALTO_PANTALLA, &Wire, -1);
@@ -61,11 +63,10 @@ int pos = 0;                  //Posición inicial del servo -- Initial position 
 int  conta = 0;               //Contamos el número de ciclos del servo -- We count the number of servo cycles
 int pararServo;               
 
-//Variables para la temp y humedad, así como la temperatura objetivo
+//Variables para la temp y humedad
 //Variables for temp and humidity as well as target temperature
 float temp;
 float h;
-const float setTemp=37.8;
 
 //Variables para contabilizar los días que se faltan del ciclo de incubación
 //Variables for counting the days missing from the incubation cycle
@@ -150,22 +151,22 @@ bool Giro(void *) {
 //Función de alarma ante temperatura muy baja
 //Very low temperature alarm function
 void Alarma() {
-  String chat_id2 = String("xxxxxxxx");
+  String chat_id2 = String("xx:xx:Xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:");  //fingerprint del bot de telegram
   bot.sendMessage(chat_id2, "Temperatura Incubadora muy baja!!"); 
 }
 
 //Funcion para controlar el calentamiento de la incubadora
 //Function to control the heating of the incubator
 void ControlTemperatura() {
-  if(setTemp-temp<=0.2 || temp > 38){
-    digitalWrite(rele, HIGH);
+  if(temp > 38){
+    digitalWrite(rele, LOW);
     display.setCursor(1, 32);
     display.print("LAMPARA OFF"); 
     digitalWrite(ledAzul, LOW);
     }
     
-  else if(setTemp-temp>0.2 && temp<35){
-    digitalWrite(rele, LOW);
+  else if(temp<35){
+    digitalWrite(rele, HIGH);
     digitalWrite(ledRojo,HIGH);
     digitalWrite(ledAzul, HIGH);
     display.setCursor(1, 32);
@@ -173,7 +174,7 @@ void ControlTemperatura() {
     Alarma();   
     
   } else {  
-    digitalWrite(rele, LOW);
+    digitalWrite(rele, HIGH);
     digitalWrite(ledAzul, HIGH);
     digitalWrite(ledRojo, LOW);
     display.setCursor(1, 32);
@@ -185,7 +186,7 @@ void ControlTemperatura() {
 
 void setup() {
   Serial.begin(9600);
-
+  Wire.begin(sda, scl);
   WiFi.begin(ssid, password);
 
   while ( WiFi.status() != WL_CONNECTED ) {
@@ -207,7 +208,7 @@ void setup() {
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
 
-  pinMode(rele,OUTPUT);
+  pinMode (rele,OUTPUT);
   pinMode(ledAzul, OUTPUT);
   pinMode(ledRojo, OUTPUT);
   myservo.attach(SERVO);
@@ -216,7 +217,7 @@ void setup() {
 
   //Para que funcione bien el bot es necesario el fingerprint del mismo
   bot._debug = true;
-  client.setFingerprint("xx:xx:xx:xx:xx:xx");  //https://api.telegram.org/botxxxxxxx (xxx es el token) luego view page info, security, view certificate, sh1
+  client.setFingerprint("xx:xx:xx:xx:Xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:");  //https://api.telegram.org/botxxxxxxx (xxx es el token) luego view page info, security, view certificate, sh1
   
 }
 
@@ -225,8 +226,8 @@ void loop() {
   timeClient.update();
   Serial.println(timeClient.getFormattedTime());
  
-  float h = dht.readHumidity();    
-  float temp = dht.readTemperature();
+  h = dht.readHumidity();    
+  temp = dht.readTemperature();
 
   if (isnan(h) || isnan(temp)) {
     Serial.println("Error obteniendo los datos del sensor DHT11");
@@ -284,5 +285,5 @@ void loop() {
   timer.tick();
   
   delay(5000); 
-
+  
 }
